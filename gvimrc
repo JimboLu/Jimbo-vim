@@ -1,66 +1,32 @@
-" All system-wide defaults are set in $VIMRUNTIME/debian.vim and sourced by
-" the call to :runtime you can find below.  If you wish to change any of those
-" settings, you should do it in this file (/etc/vim/vimrc), since debian.vim
-" will be overwritten everytime an upgrade of the vim packages is performed.
-" It is recommended to make changes after sourcing debian.vim since it alters
-" the value of the 'compatible' option.
+" Make external commands work through a pipe instead of a pseudo-tty
+"set noguipty
 
-" This line should not be removed as it ensures that various options are
-" properly set to work with the Vim-related packages available in Debian.
-runtime! debian.vim
-
-" Uncomment the next line to make Vim more Vi-compatible
-" NOTE: debian.vim sets 'nocompatible'.  Setting 'compatible' changes numerous
-" options, so any other options should be set AFTER setting 'compatible'.
-"set compatible
-
-" Vim5 and later versions support syntax highlighting. Uncommenting the next
-" line enables syntax highlighting by default.
-if has("syntax")
-  syntax on
-endif
-
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-"set background=dark
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-"if has("autocmd")
-"  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" You can also specify a different font, overriding the default font
+"if has('gui_gtk2')
+"  set guifont=Bitstream\ Vera\ Sans\ Mono\ 12
+"else
+"  set guifont=-misc-fixed-medium-r-normal--14-130-75-75-c-70-iso8859-1
 "endif
 
-" Uncomment the following to have Vim load indentation rules and plugins
-" according to the detected filetype.
-"if has("autocmd")
-"  filetype plugin indent on
-"endif
-
-" The following are commented out as they cause vim to behave a lot
-" differently from regular Vi. They are highly recommended though.
-"set showcmd		" Show (partial) command in status line.
-"set showmatch		" Show matching brackets.
-"set ignorecase		" Do case insensitive matching
-"set smartcase		" Do smart case matching
-"set incsearch		" Incremental search
-"set autowrite		" Automatically save before commands like :next and :make
-"set hidden		" Hide buffers when they are abandoned
-"set mouse=a		" Enable mouse usage (all modes)
+" If you want to run gvim with a dark background, try using a different
+" colorscheme or running 'gvim -reverse'.
+" http://www.cs.cmu.edu/~maverick/VimColorSchemeTest/ has examples and
+" downloads for the colorschemes on vim.org
 
 " Source a global configuration file if available
-if filereadable("/etc/vim/vimrc.local")
-  source /etc/vim/vimrc.local
+if filereadable("/etc/vim/gvimrc.local")
+  source /etc/vim/gvimrc.local
 endif
 
 "******************************************************************************
-"                           < 界面配置 >
+""                           < 界面配置 >
 "******************************************************************************
 
 set nocompatible " 关闭 vi 兼容模式
 syntax on " 自动语法高亮
 "colorscheme molokai " 设定配色方案
 set number " 显示行号
-" set cursorline " 突出显示当前行
+set cursorline " 突出显示当前行
 set ruler " 打开状态栏标尺
 set shiftwidth=4 " 设定 << 和 >> 命令移动时的宽度为 4
 set softtabstop=4 " 使得按退格键时可以一次删掉 4 个空格
@@ -92,33 +58,28 @@ set foldenable " 开始折叠
 set foldmethod=syntax " 设置语法折叠
 set foldcolumn=0 " 设置折叠区域的宽度
 setlocal foldlevel=1 " 设置折叠层数为
-" 窗口启动时自动最大化
-au GUIEnter * simalt ~x
-" UTF-8 编码
+au GUIEnter * simalt ~x " 窗口启动时自动最大化
 set encoding=utf-8
 set termencoding=utf-8
 set formatoptions+=mM
-set fencs=utf-8,gbk
-" 括号自动补全
+set fencs=utf-8,gbk " UTF-8 编码
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
-" inoremap { {}<ESC>i
 inoremap { {<ESC>o<ESC>o}<ESC>ki<TAB>
 
 "******************************************************************************
-" "                          << 自动添加头文件注释 >>
+"" "                          << 自动添加头文件注释 >>
 "******************************************************************************
-
 autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec,*.cs ":call SetTitle()"
 
 func SetTitle()
-	if &filetype == 'cs'
-		call setline(1,"/*******************************************************************************") 
+	if &filetype == 'cpp'
+		call setline(1,"/*******************************************************************************")
 		call append(line("."), " File Name: ".expand("%"))
 		call append(line(".")+1, " Descript:")
 		call append(line(".")+2, " ")
 		call append(line(".")+3, " Version: 1.0")
-		call append(line(".")+4, " Created Time: ".strftime("%c"))
+		call append(line(".")+4, " Created Time: ".strftime("%D %T"))
 		call append(line(".")+5, " Compiler: ")
 		call append(line(".")+6, " Editor: vim")
 		call append(line(".")+7, " Author: Jimbo")
@@ -127,23 +88,6 @@ func SetTitle()
 		call append(line(".")+10, " Company: ")
 		call append(line(".")+11, "*******************************************************************************/")
 		call append(line(".")+12, "")
-		call append(line(".")+13, "using System;")
-	endif
-	if &filetype == 'cpp'
-		call setline(1,"/*******************************************************************************")
-		call append(line("."), " File Name: ".expand("%")) 
-		call append(line(".")+1, " Descript:") 
-		call append(line(".")+2, " ") 
-		call append(line(".")+3, " Version: 1.0") 
-		call append(line(".")+4, " Created Time: ".strftime("%D %T")) 
-		call append(line(".")+5, " Compiler: ")
-		call append(line(".")+6, " Editor: vim")
-		call append(line(".")+7, " Author: Jimbo") 
-		call append(line(".")+8, " mail: jimboo.lu@gmail.com") 
-		call append(line(".")+9, " ") 
-		call append(line(".")+10, " Company: ") 
-		call append(line(".")+11, "*******************************************************************************/")
-		call append(line(".")+12, "") 
 		call append(line(".")+13, "#ifndef ".expand("%")) 
 		call append(line(".")+14, "#define ".expand("%"))
 		call append(line(".")+15, "#include <".expand("%").">")
@@ -169,15 +113,12 @@ func SetTitle()
 		call append(line(".")+15, "#include <".expand("%").">")
 		call append(line(".")+16, "#endif")
 	endif
-	"新建文件后，自动定位到文件末尾
-	autocmd BufNewFile * normal G
+		autocmd BufNewFile * normal G 
 endfunc
 
 "*****************************************************************************
-"                          <<  编写文件时的配置 >>
+""                          <<  编写文件时的配置 >>
 "*****************************************************************************
-
-" 在不使用 MiniBufExplorer 插件时也可用<C-k,j,h,l>切换到上下左右的窗口中去
 
 " 当文件在外部被修改，自动更新该文件
 set autoread
