@@ -56,7 +56,7 @@ set nocompatible " 关闭 vi 兼容模式
 syntax on " 自动语法高亮
 "colorscheme molokai " 设定配色方案
 set number " 显示行号
-set cursorline " 突出显示当前行
+" set cursorline " 突出显示当前行
 set ruler " 打开状态栏标尺
 set shiftwidth=4 " 设定 << 和 >> 命令移动时的宽度为 4
 set softtabstop=4 " 使得按退格键时可以一次删掉 4 个空格
@@ -97,4 +97,102 @@ set fencs=utf-8,gbk
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 " inoremap { {}<ESC>i
-inoremap { {<ESC>o<ESC>o}<ESC>ki<TAB><TAB>
+inoremap { {<ESC>o<ESC>o}<ESC>ki<TAB>
+
+"******************************************************************************
+" "                          << 自动添加头文件注释 >>
+"******************************************************************************
+
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec,*.cs ":call SetTitle()"
+
+func SetTitle()
+	if &filetype == 'cs'
+		call setline(1,"/*******************************************************************************") 
+		call append(line("."), " File Name: ".expand("%"))
+		call append(line(".")+1, " Descript:")
+		call append(line(".")+2, " ")
+		call append(line(".")+3, " Version: 1.0")
+		call append(line(".")+4, " Created Time: ".strftime("%c"))
+		call append(line(".")+5, " Compiler: ")
+		call append(line(".")+6, " Editor: vim")
+		call append(line(".")+7, " Author: Jimbo")
+		call append(line(".")+8, " mail: jimboo.lu@gmail.com")
+		call append(line(".")+9, " ")
+		call append(line(".")+10, " Company: ")
+		call append(line(".")+11, "*******************************************************************************/")
+		call append(line(".")+12, "")
+		call append(line(".")+13, "using System;")
+	endif
+	if &filetype == 'cpp'
+		call setline(1,"/*******************************************************************************")
+		call append(line("."), " File Name: ".expand("%")) 
+		call append(line(".")+1, " Descript:") 
+		call append(line(".")+2, " ") 
+		call append(line(".")+3, " Version: 1.0") 
+		call append(line(".")+4, " Created Time: ".strftime("%D %T")) 
+		call append(line(".")+5, " Compiler: ")
+		call append(line(".")+6, " Editor: vim")
+		call append(line(".")+7, " Author: Jimbo") 
+		call append(line(".")+8, " mail: jimboo.lu@gmail.com") 
+		call append(line(".")+9, " ") 
+		call append(line(".")+10, " Company: ") 
+		call append(line(".")+11, "*******************************************************************************/")
+		call append(line(".")+12, "") 
+		call append(line(".")+13, "#ifndef ".expand("%")) 
+		call append(line(".")+14, "#define ".expand("%"))
+		call append(line(".")+15, "#include <".expand("%").">")
+		call append(line(".")+16, "#endif")
+	endif
+	if &filetype == 'h'
+		call setline(1,"/*******************************************************************************")
+		call append(line("."), " File Name: ".expand("%"))
+		call append(line(".")+1, " Descript:")
+		call append(line(".")+2, " ")
+		call append(line(".")+3, " Version: 1.0")
+		call append(line(".")+4, " Created Time: ".strftime("%c")))
+		call append(line(".")+5, " Compiler: ")
+		call append(line(".")+6, " Editor: vim")
+		call append(line(".")+7, " Author: Jimbo")
+		call append(line(".")+8, " mail: jimboo.lu@gmail.com")
+		call append(line(".")+9, " ")
+		call append(line(".")+10, " Company: ")
+		call append(line(".")+11, "*******************************************************************************/")
+		call append(line(".")+12, "")
+		call append(line(".")+13, "#ifndef ".expand("%"))
+		call append(line(".")+14, "#define ".expand("%"))
+		call append(line(".")+15, "#include <".expand("%").">")
+		call append(line(".")+16, "#endif")
+	endif
+	"新建文件后，自动定位到文件末尾
+	autocmd BufNewFile * normal G
+endfunc
+
+"*****************************************************************************
+"                          <<  编写文件时的配置 >>
+"*****************************************************************************
+
+" 在不使用 MiniBufExplorer 插件时也可用<C-k,j,h,l>切换到上下左右的窗口中去
+
+" 当文件在外部被修改，自动更新该文件
+set autoread
+
+" 常规模式下输入 cS 清除行尾空格
+nmap cS :%s/\s\+$//g<cr>:noh<cr>
+
+" 常规模式下输入 cM 清除行尾 ^M 符号
+nmap cM :%s/\r$//g<cr>:noh<cr>
+
+" Ctrl + K 插入模式下光标向上移动
+imap <c-k> <Up>
+
+" Ctrl + J 插入模式下光标向下移动
+imap <c-j> <Down>
+
+" Ctrl + H 插入模式下光标向左移动
+imap <c-h> <Left>
+
+" Ctrl + L 插入模式下光标向右移动
+imap <c-l> <Right>
+
+" 每行超过80个的字符用下划线标示
+au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 80 . 'v.\+', -1)
