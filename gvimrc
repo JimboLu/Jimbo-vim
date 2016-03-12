@@ -24,7 +24,7 @@ endif
 
 set nocompatible " 关闭 vi 兼容模式
 syntax on " 自动语法高亮
-"colorscheme molokai " 设定配色方案
+colorscheme Tomorrow-Night " 设定配色方案
 set number " 显示行号
 set cursorline " 突出显示当前行
 set ruler " 打开状态栏标尺
